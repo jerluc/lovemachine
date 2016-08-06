@@ -9,12 +9,12 @@ function Scene:initialize(name)
     self.name = name
     self.filter = noFilter
     self.layers = {}
-    self:newLayer('default')
+    self:newLayer()
 end
 
-function Scene:newLayer(name)
+-- TODO: Just use layer IDs
+function Scene:newLayer()
     table.insert(self.layers, {
-        name = name,
         objects = {}
     })
     return #self.layers
@@ -33,20 +33,9 @@ function Scene:add(id, ...)
     return obj
 end
 
-function Scene:getLayer(layer)
-    for _, layer in ipairs(self.layers) do
-        if layer.name == layer then
-            return layer
-        end
-    end
-
-    error(string.format('No such layer [%s]!', layer))
-end
-
-function Scene:removeLayer(layer)
-    local layer = self:getLayer(layer)
-    layer.objects = nil
-    self.layers[layer] = nil
+function Scene:removeLayer(id)
+    assert(self.layers[id] ~= nil, string.format('No such layer at index [%s]', id))
+    self.layers[id] = nil
 end
 
 function Scene:get(id)
@@ -83,7 +72,12 @@ function Scene:draw()
     end)
 end
 
+function Scene:preUpdate(dt) end
+
+function Scene:postUpdate(dt) end
+
 function Scene:update(dt)
+    self:preUpdate(dt)
     for _, layer in ipairs(self.layers) do
         for _, obj in pairs(layer.objects) do
             if obj.update ~= nil then
@@ -91,6 +85,7 @@ function Scene:update(dt)
             end
         end
     end
+    self:postUpdate(dt)
 end
 
 function Scene:__tostring()
@@ -98,6 +93,7 @@ function Scene:__tostring()
 end
 
 function Scene:load(state)
+    error('Scene:load() not implemented!')
 end
 
 function Scene:save()
@@ -125,6 +121,8 @@ function Scene:exit()
         end
         self.layers[i] = nil
     end
+    -- TODO: This is pretty fucking stupid
+    self:newLayer()
 end
 
 return {

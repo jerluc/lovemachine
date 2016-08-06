@@ -1,5 +1,5 @@
 local LoveMachine = {
-    running = false,
+    running = true,
     locale = 'en_US',
     currentScene = nil,
     settings = {}

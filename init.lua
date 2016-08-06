@@ -2,10 +2,7 @@
 local M = require('lovemachine.machine')
 M.debug = require('lovemachine.debug')
 M.scene = require('lovemachine.scene')
+M.animation = require('lovemachine.animation')
 M.state = require('lovemachine.state')
-
--- Actually binds LOVE handlers to lovemachine
--- TODO: Is there any more standard place to put this?
-M._bindToLOVE()
-
+M.run = M._bindToLOVE
 return M
